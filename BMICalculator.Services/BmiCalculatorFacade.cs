@@ -7,23 +7,14 @@ namespace BMICalculator.Services
 {
     public class BmiCalculatorFacade : IBmiCalculatorFacade
     {
-        private readonly UnitSystem unitSystem;
-        private readonly IBmiCalculator bmiCalculator;
         private readonly IBmiDeterminator bmiDeterminator;
-        public BmiCalculatorFacade(IBmiDeterminator bmiDeterminator)
+        private readonly IBmiCalculatorFactory bmiCalculatorFactory;
+
+        public BmiCalculatorFacade(IBmiDeterminator bmiDeterminator, IBmiCalculatorFactory bmiCalculatorFactory)
         {
             this.bmiDeterminator = bmiDeterminator;
-            bmiCalculator = GetBmiCalculator(unitSystem);
+            this.bmiCalculatorFactory = bmiCalculatorFactory;
         }
-
-        private IBmiCalculator GetBmiCalculator(UnitSystem unitSystem)
-            =>
-                unitSystem switch
-                {
-                    UnitSystem.Imperial => new ImperialBmiCalculator(),
-                    UnitSystem.Metric => new MetricBmiCalculator(),
-                    _ => throw new NotImplementedException()
-                };
 
         private string GetSummary(BmiClassification classification)
             => classification switch
@@ -38,6 +29,7 @@ namespace BMICalculator.Services
 
         public BmiResult GetResult(double weight, double height, UnitSystem unitSystem)
         {
+            var bmiCalculator = bmiCalculatorFactory.CreateCalculator(unitSystem);
             var bmi = bmiCalculator.CalculateBmi(weight, height);
             BmiClassification classification = bmiDeterminator.DetermineBmi(bmi);
 

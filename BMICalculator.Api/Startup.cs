@@ -22,9 +22,12 @@ namespace BMICalculator.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<MetricBmiCalculator>();
+            services.AddScoped<ImperialBmiCalculator>();
             services.AddScoped<IResultRepository, ResultRepository>();
             services.AddScoped<IBmiDeterminator, BmiDeterminator>();
             services.AddScoped<IBmiCalculatorFacade, BmiCalculatorFacade>();
+            services.AddScoped<IBmiCalculatorFactory, BmiCalculatorFactory>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
