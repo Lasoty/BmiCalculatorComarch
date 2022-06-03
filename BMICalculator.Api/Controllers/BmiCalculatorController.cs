@@ -10,15 +10,12 @@ namespace BMICalculator.Api.Controllers
     [Route("[controller]")]
     public class BmiCalculatorController : ControllerBase
     {
-        private readonly ILogger<BmiCalculatorController> logger;
         private readonly IBmiCalculatorFacade bmiCalculatorFacade;
 
         public BmiCalculatorController(
-            ILogger<BmiCalculatorController> logger,
             IBmiCalculatorFacade bmiCalculatorFacade
             )
         {
-            this.logger = logger;
             this.bmiCalculatorFacade = bmiCalculatorFacade;
         }
 
