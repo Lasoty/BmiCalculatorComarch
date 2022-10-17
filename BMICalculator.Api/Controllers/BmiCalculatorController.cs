@@ -19,6 +19,13 @@ namespace BMICalculator.Api.Controllers
             this.bmiCalculatorFacade = bmiCalculatorFacade;
         }
 
+        /// <summary>
+        /// Calculate BMI
+        /// </summary>
+        /// <param name="weight"></param>
+        /// <param name="height"></param>
+        /// <param name="unit">0 - Metric, 1 - Imperial</param>
+        /// <returns></returns>
         [HttpGet("[action]/{weight}/{height}/{unit:int=0}")]
         public IActionResult Calculate(double weight, double height, UnitSystem unit)
         {

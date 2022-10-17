@@ -1,6 +1,10 @@
 ﻿namespace BMICalculator.Services.Enums
 {
-    public enum UnitSystem
+    /// <summary>
+    /// 0 - Metric
+    /// 1 - Imperial
+    /// </summary>
+    public enum UnitSystem : int
     {
         Metric,
         Imperial

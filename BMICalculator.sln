@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMICalculator.Api", "BMICalculator.Api\BMICalculator.Api.csproj", "{A5E8F469-5192-4C10-9324-9B640453F596}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BMICalculator.Api", "BMICalculator.Api\BMICalculator.Api.csproj", "{A5E8F469-5192-4C10-9324-9B640453F596}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMICalculator.Services", "BMICalculator.Services\BMICalculator.Services.csproj", "{06EBE446-6E80-4A4C-97CF-E88B4419810F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BMICalculator.Services", "BMICalculator.Services\BMICalculator.Services.csproj", "{06EBE446-6E80-4A4C-97CF-E88B4419810F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMICalculator.Model", "BMICalculator.Model\BMICalculator.Model.csproj", "{ABF98B67-825C-4EE5-BDD4-A9FA66AC3C96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BMICalculator.Model", "BMICalculator.Model\BMICalculator.Model.csproj", "{ABF98B67-825C-4EE5-BDD4-A9FA66AC3C96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestedProject", "TestedProject\TestedProject.csproj", "{C9B2BBDB-3BEA-43A4-AAC9-BC02E55FD8AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BC34A23B-F801-45CC-9A78-FC79EE9F7861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestedProject.Tests", "Tests\TestedProject.Tests\TestedProject.Tests.csproj", "{BBF0BD32-2FA7-4A01-B09C-3E7F7E66FC7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +33,20 @@ Global
 		{ABF98B67-825C-4EE5-BDD4-A9FA66AC3C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABF98B67-825C-4EE5-BDD4-A9FA66AC3C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABF98B67-825C-4EE5-BDD4-A9FA66AC3C96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9B2BBDB-3BEA-43A4-AAC9-BC02E55FD8AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9B2BBDB-3BEA-43A4-AAC9-BC02E55FD8AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9B2BBDB-3BEA-43A4-AAC9-BC02E55FD8AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9B2BBDB-3BEA-43A4-AAC9-BC02E55FD8AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBF0BD32-2FA7-4A01-B09C-3E7F7E66FC7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBF0BD32-2FA7-4A01-B09C-3E7F7E66FC7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBF0BD32-2FA7-4A01-B09C-3E7F7E66FC7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBF0BD32-2FA7-4A01-B09C-3E7F7E66FC7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BBF0BD32-2FA7-4A01-B09C-3E7F7E66FC7E} = {BC34A23B-F801-45CC-9A78-FC79EE9F7861}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB151369-48C7-410E-A642-8A4510F9D576}
