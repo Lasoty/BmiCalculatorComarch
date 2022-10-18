@@ -1,3 +1,4 @@
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -7,12 +8,17 @@ namespace TestedProject.Tests
 {
     public class CalculatorServiceTests
     {
+        Mock<IDiscountService> discountMock;
         ICalculatorService calculatorService;
 
         [SetUp]
         public void Setup()
         {
-            calculatorService = new CalculatorService();
+            Mock<ITaxProvider> mock = new Mock<ITaxProvider>();
+            mock.Setup(m => m.GetTax(It.IsAny<RateType>())).Returns(0.23m);
+            discountMock = new Mock<IDiscountService>();
+
+            calculatorService = new CalculatorService(mock.Object, discountMock.Object);
         }
 
         [TearDown]
@@ -36,7 +42,7 @@ namespace TestedProject.Tests
         [TestCase("2012.5.31", "2012.5.31 13:13:00")]
         public void CheckDateShouldReturnTrueForValidInvoiceDate(DateTime expected, DateTime testedDate)
         {
-            //Assert 
+            //Arrange 
             Invoice invoice = new()
             {
                 Date = expected,
@@ -51,7 +57,7 @@ namespace TestedProject.Tests
         [Test]
         public void CreateInvoiceShouldReturnCorrectNetValueInInvoice()
         {
-            //Assert
+            //Arrange
             ICollection<InvoiceItem> items = new List<InvoiceItem>()
             {
                 new InvoiceItem { Name = "Item test 1", NetValue = 10, Quantity = 1 },
@@ -71,7 +77,7 @@ namespace TestedProject.Tests
         [Test]
         public void CreateInvoiceShouldReturnCorrectGrossValueInInvoice()
         {
-            //Assert
+            //Arrange
             ICollection<InvoiceItem> items = new List<InvoiceItem>()
             {
                 new InvoiceItem { Name = "Item test 1", NetValue = 10, Quantity = 1 },
@@ -85,6 +91,36 @@ namespace TestedProject.Tests
             var actual = calculatorService.CreateInvoice(items);
 
             Assert.AreEqual(expected, actual.TotalGross);
+        }
+
+        [Test]
+        public void CreateInvoiceShouldThrowAnExceptionWhenItemsIsEmpty()
+        {
+            //Arrange 
+            ICollection<InvoiceItem> items = new List<InvoiceItem>();
+
+            //Act & Assert
+            Assert.Throws<ArgumentNullException>(() => calculatorService.CreateInvoice(items));
+        }
+
+        [Test]
+        public void CreateInvoiceShouldReturnExactInvoiceItems()
+        {
+            //Arrange
+            ICollection<InvoiceItem> items = new List<InvoiceItem>()
+            {
+                new InvoiceItem { Name = "Item test 1", NetValue = 10, Quantity = 1 },
+                new InvoiceItem { Name = "Item test 2", NetValue = 10, Quantity = 2 },
+                new InvoiceItem { Name = "Item test 3", NetValue = 10, Quantity = 3 },
+            };
+
+            //Act 
+            var actual = calculatorService.CreateInvoice(items);
+
+            //Assert
+            CollectionAssert.AllItemsAreNotNull(actual.Items);
+            CollectionAssert.AllItemsAreInstancesOfType(actual.Items, typeof(InvoiceItem));
+            CollectionAssert.AreEqual(items, actual.Items);
         }
     }
 }

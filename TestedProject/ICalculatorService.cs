@@ -9,6 +9,12 @@ namespace TestedProject
         decimal GetGrossFromNet(decimal net, decimal tax);
         bool CheckDate(Invoice invoice, DateTime dateTime);
 
-        Invoice CreateInvoice(ICollection<InvoiceItem> items);
+        Invoice CreateInvoice(ICollection<InvoiceItem> items, RateType rate = RateType.General);
+
+        DateTime StartPeriodDate(DateTime dateTime);
+
+        DateTime GetInvoiceDate(Invoice invoice);
+
+        event EventHandler InvoiceCreated;
     }
 }

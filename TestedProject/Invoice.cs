@@ -9,6 +9,8 @@ namespace TestedProject
         public ICollection<InvoiceItem> Items { get; internal set; }
         public decimal TotalNet { get; internal set; }
         public decimal TotalGross { get; internal set; }
+
+        public string ReceipientName { get; set; }
     }
 
     public class InvoiceItem
