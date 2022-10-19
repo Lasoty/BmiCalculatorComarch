@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TestedProject
 {
@@ -9,7 +10,7 @@ namespace TestedProject
         decimal GetGrossFromNet(decimal net, decimal tax);
         bool CheckDate(Invoice invoice, DateTime dateTime);
 
-        Invoice CreateInvoice(ICollection<InvoiceItem> items, RateType rate = RateType.General);
+        Task<Invoice> CreateInvoice(ICollection<InvoiceItem> items, RateType rate = RateType.General);
 
         DateTime StartPeriodDate(DateTime dateTime);
 

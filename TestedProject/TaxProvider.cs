@@ -2,6 +2,8 @@
 {
     public class TaxProvider : ITaxProvider
     {
+        public int ForTest { get; set; }
+
         public decimal GetTax(RateType rate)
         {
             switch (rate)

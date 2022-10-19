@@ -21,6 +21,7 @@ namespace TestedProject.Tests
         {
             Mock<ITaxProvider> taxMock = new Mock<ITaxProvider>();
             taxMock.Setup(m => m.GetTax(It.IsAny<RateType>())).Returns(0.23m);
+            taxMock.Setup(m => m.ForTest).Returns(123);
 
             discountMock = new Mock<IDiscountService>();
             calculatorService = new CalculatorService(taxMock.Object, discountMock.Object);
@@ -55,7 +56,7 @@ namespace TestedProject.Tests
         }
 
         [Test]
-        public void CreateInvoiceShouldReturnInvoiceWithExactItems()
+        public async Task CreateInvoiceShouldReturnInvoiceWithExactItems()
         {
             ICollection<InvoiceItem> items = new List<InvoiceItem>()
             {
@@ -64,7 +65,7 @@ namespace TestedProject.Tests
                 new InvoiceItem { Name = "Item test 3", NetValue = 10, Quantity = 3 },
             };
 
-            Invoice actual = calculatorService.CreateInvoice(items, RateType.General);
+            Invoice actual = await calculatorService.CreateInvoice(items, RateType.General);
 
             actual.Should().NotBeNull();
 
@@ -73,7 +74,7 @@ namespace TestedProject.Tests
         }
 
         [Test]
-        public void CreateInvoiceShouldReturnInvoiceIncludeDiscount()
+        public async Task CreateInvoiceShouldReturnInvoiceIncludeDiscount()
         {
             ICollection<InvoiceItem> items = new List<InvoiceItem>()
             {
@@ -83,7 +84,7 @@ namespace TestedProject.Tests
             };
             discountMock.Setup(m => m.GetDiscount(It.IsAny<string>())).Returns(0.1m);
 
-            Invoice actual = calculatorService.CreateInvoice(items, RateType.General);
+            Invoice actual = await calculatorService.CreateInvoice(items, RateType.General);
 
             actual.Should().NotBeNull();
 
@@ -92,28 +93,28 @@ namespace TestedProject.Tests
 
 
         [Test]
-        public void CreateInvoiceShouldThrowAnExceptionWhenItemsIsEmpty()
+        public async Task CreateInvoiceShouldThrowAnExceptionWhenItemsIsEmpty()
         {
             ICollection<InvoiceItem> items = new List<InvoiceItem>();
 
-            calculatorService.Invoking(cs => cs.CreateInvoice(items))
-                .Should().Throw<ArgumentNullException>();
+            await calculatorService.Invoking(async cs => await cs.CreateInvoice(items))
+                .Should().ThrowAsync<ArgumentNullException>();
         }
 
 
         [Test]
-        public void CreateInvoiceShouldThrowAnExceptionWhenItemsIsEmpty2()
+        public async Task CreateInvoiceShouldThrowAnExceptionWhenItemsIsEmpty2()
         {
             ICollection<InvoiceItem> items = new List<InvoiceItem>();
 
-            Action act = () => calculatorService.CreateInvoice(items);
+            Func<Task> act = async () => await calculatorService.CreateInvoice(items);
 
-            act.Should().Throw<ArgumentNullException>();
+            await act.Should().ThrowAsync<ArgumentNullException>();
             //act.Should().NotThrowAfter(5.Seconds(), 100.Microseconds());
         }
 
         [Test]
-        public void CreateInvoiceShouldRaiseInvoiceCreatedEvent()
+        public async Task CreateInvoiceShouldRaiseInvoiceCreatedEvent()
         {
             using var monitoredCalculatorService = calculatorService.Monitor();
 
@@ -123,7 +124,7 @@ namespace TestedProject.Tests
             };
 
             //calculatorService.InvoiceCreated += (sender, args) => { };
-            Invoice actual = calculatorService.CreateInvoice(items);
+            Invoice actual = await calculatorService.CreateInvoice(items);
             monitoredCalculatorService.Should().Raise(nameof(CalculatorService.InvoiceCreated));
         }
     }

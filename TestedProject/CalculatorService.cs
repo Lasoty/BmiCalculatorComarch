@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace TestedProject
 {
@@ -30,7 +31,7 @@ namespace TestedProject
             return invoice.Date == dateTime.Date;
         }
 
-        public Invoice CreateInvoice(ICollection<InvoiceItem> items, RateType rate)
+        public async Task<Invoice> CreateInvoice(ICollection<InvoiceItem> items, RateType rate)
         {
             decimal rateValue = taxProvider.GetTax(rate);
             if (items == null || items.Count == 0)

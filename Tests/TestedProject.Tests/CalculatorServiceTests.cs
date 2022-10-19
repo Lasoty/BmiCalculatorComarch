@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TestedProject.Tests
 {
@@ -55,7 +56,7 @@ namespace TestedProject.Tests
         }
 
         [Test]
-        public void CreateInvoiceShouldReturnCorrectNetValueInInvoice()
+        public async Task CreateInvoiceShouldReturnCorrectNetValueInInvoice()
         {
             //Arrange
             ICollection<InvoiceItem> items = new List<InvoiceItem>()
@@ -68,14 +69,14 @@ namespace TestedProject.Tests
             decimal expected = 60m;
 
             //Act 
-            var actual = calculatorService.CreateInvoice(items);
+            var actual = await calculatorService.CreateInvoice(items);
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(expected, actual.TotalNet);
         }
 
         [Test]
-        public void CreateInvoiceShouldReturnCorrectGrossValueInInvoice()
+        public async Task CreateInvoiceShouldReturnCorrectGrossValueInInvoice()
         {
             //Arrange
             ICollection<InvoiceItem> items = new List<InvoiceItem>()
@@ -88,23 +89,23 @@ namespace TestedProject.Tests
             decimal expected = 73.8m;
 
             //Act 
-            var actual = calculatorService.CreateInvoice(items);
+            var actual = await calculatorService.CreateInvoice(items);
 
             Assert.AreEqual(expected, actual.TotalGross);
         }
 
         [Test]
-        public void CreateInvoiceShouldThrowAnExceptionWhenItemsIsEmpty()
+        public async Task CreateInvoiceShouldThrowAnExceptionWhenItemsIsEmpty()
         {
             //Arrange 
             ICollection<InvoiceItem> items = new List<InvoiceItem>();
 
             //Act & Assert
-            Assert.Throws<ArgumentNullException>(() => calculatorService.CreateInvoice(items));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await calculatorService.CreateInvoice(items));
         }
 
         [Test]
-        public void CreateInvoiceShouldReturnExactInvoiceItems()
+        public async Task CreateInvoiceShouldReturnExactInvoiceItems()
         {
             //Arrange
             ICollection<InvoiceItem> items = new List<InvoiceItem>()
@@ -115,7 +116,7 @@ namespace TestedProject.Tests
             };
 
             //Act 
-            var actual = calculatorService.CreateInvoice(items);
+            var actual = await calculatorService.CreateInvoice(items);
 
             //Assert
             CollectionAssert.AllItemsAreNotNull(actual.Items);
