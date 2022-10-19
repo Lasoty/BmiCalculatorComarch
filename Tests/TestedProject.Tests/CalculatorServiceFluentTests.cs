@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 using Moq;
+using Moq.Contrib.HttpClient;
 using NUnit.Framework;
 
 
@@ -14,7 +16,8 @@ namespace TestedProject.Tests
     public class CalculatorServiceFluentTests
     {
         ICalculatorService calculatorService;
-        Mock<IDiscountService> discountMock; 
+        Mock<IDiscountService> discountMock;
+        Mock<HttpMessageHandler> handler;
 
         [SetUp]
         public void StartUp()
@@ -23,8 +26,17 @@ namespace TestedProject.Tests
             taxMock.Setup(m => m.GetTax(It.IsAny<RateType>())).Returns(0.23m);
             taxMock.Setup(m => m.ForTest).Returns(123);
 
+            handler = new Mock<HttpMessageHandler>();
+            var factory = new Mock<IHttpClientFactory>();
+            
+            handler.SetupAnyRequest().ReturnsResponse(System.Net.HttpStatusCode.NotFound);
+
+            var client = new HttpClient(handler.Object);
+
+            factory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(client);
+
             discountMock = new Mock<IDiscountService>();
-            calculatorService = new CalculatorService(taxMock.Object, discountMock.Object);
+            calculatorService = new CalculatorService(taxMock.Object, discountMock.Object, factory.Object);
         }
 
         [TearDown]
@@ -126,6 +138,18 @@ namespace TestedProject.Tests
             //calculatorService.InvoiceCreated += (sender, args) => { };
             Invoice actual = await calculatorService.CreateInvoice(items);
             monitoredCalculatorService.Should().Raise(nameof(CalculatorService.InvoiceCreated));
+        }
+
+        [Test]
+        public async Task SendInvoiceShouldCallToPostAsync()
+        {
+            handler.SetupRequest(HttpMethod.Post, "http://example.api/api/Invoices")
+                .ReturnsResponse(System.Net.HttpStatusCode.OK)
+                .Verifiable();
+
+            Invoice invoice = new();
+            await calculatorService.SendInvoice(invoice);
+            handler.VerifyAnyRequest(Times.AtLeastOnce());
         }
     }
 }

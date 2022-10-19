@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,12 +13,17 @@ namespace TestedProject
     {
         private readonly ITaxProvider taxProvider;
         private readonly IDiscountService discountService;
+        private readonly HttpClient httpClient;
 
-        public CalculatorService(ITaxProvider taxProvider, IDiscountService discountService)
+        public CalculatorService(
+            ITaxProvider taxProvider,
+            IDiscountService discountService,
+            IHttpClientFactory httpClientFactory)
         {
             IReceipientProvider receipientProvider = new ReceipientProvider();
             this.taxProvider = taxProvider;
             this.discountService = discountService;
+            this.httpClient = httpClientFactory.CreateClient();
         }
 
         public event EventHandler InvoiceCreated;
@@ -66,6 +74,12 @@ namespace TestedProject
         public DateTime GetInvoiceDate(Invoice invoice)
         {
             return invoice.Date.Date;
+        }
+
+        public async Task SendInvoice(Invoice invoice)
+        {
+            HttpContent content = new StringContent(JsonSerializer.Serialize(invoice), Encoding.Unicode);
+            await httpClient.PostAsync("http://example.api/api/Invoices2", content);
         }
     }
 }

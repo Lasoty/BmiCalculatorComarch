@@ -16,6 +16,8 @@ namespace TestedProject
 
         DateTime GetInvoiceDate(Invoice invoice);
 
+        Task SendInvoice(Invoice invoice);
+
         event EventHandler InvoiceCreated;
     }
 }

@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace TestedProject.Tests
@@ -19,7 +20,10 @@ namespace TestedProject.Tests
             mock.Setup(m => m.GetTax(It.IsAny<RateType>())).Returns(0.23m);
             discountMock = new Mock<IDiscountService>();
 
-            calculatorService = new CalculatorService(mock.Object, discountMock.Object);
+            var factory = new Mock<IHttpClientFactory>();
+
+
+            calculatorService = new CalculatorService(mock.Object, discountMock.Object, factory.Object);
         }
 
         [TearDown]
