@@ -13,16 +13,20 @@ namespace TestedProject
     {
         private readonly ITaxProvider taxProvider;
         private readonly IDiscountService discountService;
+        private readonly TestDbContext dbContext;
         private readonly HttpClient httpClient;
 
         public CalculatorService(
             ITaxProvider taxProvider,
             IDiscountService discountService,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            TestDbContext dbContext
+           )
         {
             IReceipientProvider receipientProvider = new ReceipientProvider();
             this.taxProvider = taxProvider;
             this.discountService = discountService;
+            this.dbContext = dbContext;
             this.httpClient = httpClientFactory.CreateClient();
         }
 
@@ -80,6 +84,12 @@ namespace TestedProject
         {
             HttpContent content = new StringContent(JsonSerializer.Serialize(invoice), Encoding.Unicode);
             await httpClient.PostAsync("http://example.api/api/Invoices2", content);
+        }
+
+        public async Task SaveInvoice(Invoice invoice)
+        {
+            dbContext.Invoices.Add(invoice);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

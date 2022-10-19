@@ -19,5 +19,7 @@ namespace TestedProject
         Task SendInvoice(Invoice invoice);
 
         event EventHandler InvoiceCreated;
+
+        Task SaveInvoice(Invoice invoice);
     }
 }

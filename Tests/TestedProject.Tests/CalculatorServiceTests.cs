@@ -1,3 +1,5 @@
+using EntityFrameworkCoreMock;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -22,8 +24,9 @@ namespace TestedProject.Tests
 
             var factory = new Mock<IHttpClientFactory>();
 
-
-            calculatorService = new CalculatorService(mock.Object, discountMock.Object, factory.Object);
+            var dbOptions = new DbContextOptions<TestDbContext>();
+            var dbContextMock = new DbContextMock<TestDbContext>(dbOptions);
+            calculatorService = new CalculatorService(mock.Object, discountMock.Object, factory.Object, dbContextMock.Object);
         }
 
         [TearDown]

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using EntityFrameworkCoreMock;
 using FluentAssertions;
 using FluentAssertions.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.Contrib.HttpClient;
 using NUnit.Framework;
@@ -18,6 +21,7 @@ namespace TestedProject.Tests
         ICalculatorService calculatorService;
         Mock<IDiscountService> discountMock;
         Mock<HttpMessageHandler> handler;
+        DbContextMock<TestDbContext> dbContextMock;
 
         [SetUp]
         public void StartUp()
@@ -28,15 +32,16 @@ namespace TestedProject.Tests
 
             handler = new Mock<HttpMessageHandler>();
             var factory = new Mock<IHttpClientFactory>();
-            
             handler.SetupAnyRequest().ReturnsResponse(System.Net.HttpStatusCode.NotFound);
-
             var client = new HttpClient(handler.Object);
-
             factory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(client);
-
+            
             discountMock = new Mock<IDiscountService>();
-            calculatorService = new CalculatorService(taxMock.Object, discountMock.Object, factory.Object);
+
+            var dbOptions = new DbContextOptions<TestDbContext>();
+            dbContextMock = new DbContextMock<TestDbContext>(dbOptions);
+
+            calculatorService = new CalculatorService(taxMock.Object, discountMock.Object, factory.Object, dbContextMock.Object);
         }
 
         [TearDown]
@@ -150,6 +155,23 @@ namespace TestedProject.Tests
             Invoice invoice = new();
             await calculatorService.SendInvoice(invoice);
             handler.VerifyAnyRequest(Times.AtLeastOnce());
+        }
+
+        [Test]
+        public async Task SaveInvoiceShouldSaveEntity()
+        {
+            var dbSetmock = dbContextMock.CreateDbSetMock(x => x.Invoices);
+            dbContextMock.Setup(dbContext => dbContext.SaveChanges()).Verifiable();
+
+            Invoice invoice = new()
+            {
+                ReceipientName = "Test 1"
+            };
+
+            await calculatorService.SaveInvoice(invoice);
+
+            dbSetmock.Object.Should().Contain(invoice);
+            dbContextMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.AtLeastOnce());
         }
     }
 }

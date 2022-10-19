@@ -5,6 +5,7 @@ namespace TestedProject
 {
     public class Invoice
     {
+        public int Id { get; set; }
         public DateTime Date { get; set; }
         public ICollection<InvoiceItem> Items { get; internal set; }
         public decimal TotalNet { get; internal set; }
